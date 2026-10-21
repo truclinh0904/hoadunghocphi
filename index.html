@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Học phí - Dịch vụ gia sư và dạy kèm Hoa Dũng</title>
-<meta name="description" content="Tra cứu học phí lớp 7 và lớp 8.2, tải phiếu thu và xác nhận đã nộp.">
+<meta name="description" content="Tra cứu học phí các lớp, tải phiếu thu và xác nhận đã nộp.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,6 +71,7 @@ button{font:inherit;color:inherit}
 .cc{display:flex;flex-direction:column;gap:3px;text-align:left;cursor:pointer;position:relative;
   background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);
   padding:16px 16px 14px;box-shadow:var(--shadow-1);transition:border-color .15s,box-shadow .15s,background .15s}
+.cc:last-child:nth-child(odd){grid-column:1 / -1}
 .cc:hover{border-color:var(--accent);box-shadow:var(--shadow-2)}
 .cc .k{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:600}
 .cc .t{font-family:var(--doc);font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.15;color:var(--fg)}
@@ -318,16 +319,54 @@ const URL_WEBAPP = "https://script.google.com/macros/s/AKfycbyW3gQ0dBs2Lap-QebC9
 /* ==================================================================== */
 
 /* ============ 1. DỮ LIỆU ============
+   Lớp 4: trích từ 4 file phiếu thu PDF (tháng 7, 8, 9, 10), mã cơ sở 47468.
    Lớp 7: trích từ 3 file phiếu thu PDF (tháng 7, 8, 9).
    Lớp 8.2: trích từ bảng học phí lớp 8.2 (14/07/2026 - 18/10/2026).
    b = số buổi tính phí theo từng kỳ thu. Lớp 8.2 có thêm bh (buổi lớp học),
    np (nghỉ có phép), vk (vắng không phép); b = bh - np - vk.  */
 const BANK = { ten: "AgriBank", bin: "970405", stk: "3521235010830", chu: "HO KINH DOANH HOA DUNG" };
-const MA_CO_SO = "49717";
 
 const LOPS = [
   {
-    id: "7", ten: "Lớp 7", phu: "Hè 2026", tieuDe: "LỚP 7-HÈ 2026", don: 40000,
+    id: "4", ten: "Lớp 4", phu: "Hè 2026", tieuDe: "LỚP 4-HÈ 2026", don: 40000, maCS: "47468",
+    moTa: "Tháng 7, 8, 9, 10/2026", nhanKy: "Tháng/Năm", lich: "",
+    vd: "ngoc", vdKq: "NGỌC ANH, NGỌC NAM, BẢO NGỌC và các em tên Ngọc khác", goiY: "Ví dụ: ngọc, minh, anh…",
+    ky: [
+      { k: "T7",  nhan: "Tháng 7/2026",  tieu: "07/2026", pref: "202607", tep: "T7" },
+      { k: "T8",  nhan: "Tháng 8/2026",  tieu: "08/2026", pref: "202608", tep: "T8" },
+      { k: "T9",  nhan: "Tháng 9/2026",  tieu: "09/2026", pref: "202609", tep: "T9" },
+      { k: "T10", nhan: "Tháng 10/2026", tieu: "10/2026", pref: "202610", tep: "T10" },
+    ],
+    hs: [
+      { ten: "BẢO AN", ma: "1050205", b: [3, 6, 1, 0] },
+      { ten: "HÀ AN", ma: "1107958", b: [2, 6, 0, 5] },
+      { ten: "DUY ANH", ma: "1050199", b: [2, 5, 2, 3] },
+      { ten: "HOÀI ANH", ma: "1101412", b: [0, 3, 0, 5] },
+      { ten: "NGỌC ANH", ma: "1069903", b: [3, 4, 0, 2] },
+      { ten: "THUỲ ANH", ma: "1050206", b: [3, 5, 1, 5] },
+      { ten: "NHẬT MINH(MẸ CHANH)", ma: "1069904", b: [2, 3, 0, 5] },
+      { ten: "QUỲNH CHI", ma: "1082473", b: [1, 4, 2, 3] },
+      { ten: "KHÁNH DUY", ma: "1050203", b: [1, 3, 0, 6] },
+      { ten: "HẢI HÀ", ma: "1050195", b: [3, 1, 1, 3] },
+      { ten: "MINH HUYỀN", ma: "1101411", b: [0, 4, 0, 4] },
+      { ten: "PHẠM ANH KHÔI", ma: "1069906", b: [3, 4, 0, 0] },
+      { ten: "TUẤN KIỆT", ma: "1050200", b: [3, 4, 2, 5] },
+      { ten: "THẢO LINH", ma: "1050204", b: [3, 5, 2, 5] },
+      { ten: "THANH MAI", ma: "1050197", b: [3, 5, 2, 5] },
+      { ten: "BẢO NAM", ma: "1101401", b: [0, 2, 0, 0] },
+      { ten: "NGỌC NAM", ma: "1050201", b: [3, 6, 2, 5] },
+      { ten: "BẢO NGỌC", ma: "1583761", b: [0, 0, 2, 5] },
+      { ten: "MAI TRỌNG TRUNG LƯƠNG( BỐ NGỌC)", ma: "1076557", b: [2, 5, 2, 5] },
+      { ten: "THẢO NGUYÊN", ma: "1101410", b: [0, 3, 0, 0] },
+      { ten: "DIỆP PHƯƠNG", ma: "1069908", b: [3, 5, 2, 4] },
+      { ten: "ANH SƠN", ma: "1050196", b: [3, 4, 2, 4] },
+      { ten: "MINH QUÂN(MẸ THUỶ)", ma: "1069905", b: [3, 6, 2, 6] },
+      { ten: "PHÚC LÂM(MẸ TRANG)", ma: "1069907", b: [3, 5, 2, 5] },
+      { ten: "BẢO TRÂM", ma: "1050198", b: [2, 5, 2, 4] },
+    ],
+  },
+  {
+    id: "7", ten: "Lớp 7", phu: "Hè 2026", tieuDe: "LỚP 7-HÈ 2026", don: 40000, maCS: "49717",
     moTa: "Tháng 7, 8, 9/2026", nhanKy: "Tháng/Năm", lich: "",
     vd: "ngan", vdKq: "NGÂN KHÁNH và LÊ NGÂN", goiY: "Ví dụ: ngân, thắng, nhi…",
     ky: [
@@ -354,7 +393,7 @@ const LOPS = [
     ],
   },
   {
-    id: "8", ten: "Lớp 8.2", phu: "", tieuDe: "LỚP 8.2", don: 40000,
+    id: "8", ten: "Lớp 8.2", phu: "", tieuDe: "LỚP 8.2", don: 40000, maCS: "49717",
     moTa: "14/07/2026 – 18/10/2026", nhanKy: "Kỳ thu", lich: "Chiều Thứ Ba, sáng Chủ nhật",
     vd: "quynh", vdKq: "NHƯ QUỲNH, PHẠM LÊ NHƯ QUỲNH và QUỲNH NHƯ", goiY: "Ví dụ: quỳnh, ngân, phong…",
     ky: [
@@ -390,7 +429,7 @@ const tien = n => n.toLocaleString("vi-VN") + " đ";
 const khongDau = s => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "")
   .replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
 
-const soPhieu = (hs, i) => hs.L.ky[i].pref + "." + MA_CO_SO + "." + hs.ma;
+const soPhieu = (hs, i) => hs.L.ky[i].pref + "." + hs.L.maCS + "." + hs.ma;
 const buoi = (hs, i) => hs.b[i];
 const soTien = (hs, i) => hs.b[i] * hs.L.don;
 const tongBuoi = hs => hs.b.reduce((s, x) => s + x, 0);
@@ -1013,7 +1052,7 @@ function xuatCSV() {
     d.push([h.ten, h.lt || "", L.tieuDe, k.tieu, soPhieu(h, i), buoi(h, i),
       buoi(h, i) ? L.don : 0, soTien(h, i), NHAN[tt(h, i)], ngayGhi(h, i)].map(o).join(","));
   })));
-  taiFile("Hoc-phi-lop-7-va-lop-8-2.csv",
+  taiFile("Hoc-phi-tat-ca-cac-lop.csv",
     new Blob(["﻿" + d.join("\r\n")], { type: "text/csv;charset=utf-8" }));
   toast("Đã tải file CSV.");
 }
