@@ -315,7 +315,7 @@ td .mini{display:flex;gap:6px;flex-wrap:wrap}
    nháy bên dưới. Đường dẫn kết thúc bằng /exec. Không điền thì app chỉ
    tra cứu được, không ghi nhận và không hiện bảng thu.
    ==================================================================== */
-const URL_WEBAPP = "https://script.google.com/macros/s/AKfycbyW3gQ0dBs2Lap-QebC91Ax0NO7rWUTK8RCduYf83VlRdL1VWjVWXpXimgw26_MZLpp0Q/exec";
+const URL_WEBAPP = "https://script.google.com/macros/s/AKfycbwrTBh-_oWkLiuxhF7EkZtNLvh7bXfEtPzwPK1L63otyQzSiKG5Lnv0qn36YT0QBXfW/exec";
 /* ==================================================================== */
 
 /* ============ 1. DỮ LIỆU ============
@@ -987,7 +987,8 @@ function veKhoa() {
     } catch (err) {
       b.disabled = false; b.textContent = "Mở khoá";
       box.appendChild(el("div", "err", err.message === "Mật khẩu chưa đúng."
-        ? "Mật khẩu chưa đúng." : "Không kết nối được máy chủ. Thầy thử lại."));
+        ? "Mật khẩu chưa đúng." : "Chưa lấy được dữ liệu (" + err.message.replace(/\.$/, "") +
+          "). Mật khẩu chưa được kiểm tra. Thầy kiểm tra quyền truy cập của bản triển khai Apps Script."));
       i.select();
     }
   };
